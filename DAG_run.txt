@@ -1,0 +1,33 @@
+╭─mikomiko@MacBook-Pro-16-2024 ~/repos/HSE_AI26/mlops/mlops-barinov-hw-1-base ‹master●›
+╰─$ docker compose exec -T scheduler airflow dags trigger \
+  hw_basic_batch_inference \
+  --run-id first-run \
+  --conf '{"business_date":"2026-09-01","batch_size":32}'
+2026-10-30T06:57:26.914826Z [info     ] creating dag run               [airflow.serialization.definitions.dag] loc=dag.py:607 logical_date=None partition_key=None run_after=datetime.datetime(2026, 10, 30, 6, 57, 26, 910629, tzinfo=Timezone('UTC')) run_id=first-run
+                     |                     |            |                     |                   |          | last_scheduling_dec |              |          |            |        | triggering_user_nam
+conf                 | dag_id              | dag_run_id | data_interval_start | data_interval_end | end_date | ision               | logical_date | run_type | start_date | state  | e
+=====================+=====================+============+=====================+===================+==========+=====================+==============+==========+============+========+====================
+{'business_date':    | hw_basic_batch_infe | first-run  | None                | None              | None     | None                | None         | manual   | None       | queued | airflow
+'2026-09-01',        | rence               |            |                     |                   |          |                     |              |          |            |        |
+'batch_size': 32}    |                     |            |                     |                   |          |                     |              |          |            |        |
+
+╭─mikomiko@MacBook-Pro-16-2024 ~/repos/HSE_AI26/mlops/mlops-barinov-hw-1-base ‹master●›
+╰─$ docker compose exec -T scheduler airflow dags list-runs hw_basic_batch_inference
+dag_id                   | run_id    | state   | run_after                        | logical_date | start_date                       | end_date
+=========================+===========+=========+==================================+==============+==================================+=================================
+hw_basic_batch_inference | first-run | success | 2026-10-30T06:57:26.910629+00:00 |              | 2026-10-30T06:57:27.159851+00:00 | 2026-10-30T06:57:32.144938+00:00
+
+╭─mikomiko@MacBook-Pro-16-2024 ~/repos/HSE_AI26/mlops/mlops-barinov-hw-1-base ‹master●›
+╰─$ docker compose exec -T warehouse psql -U etl -d warehouse < warehouse/check.sql
+ business_date | model_version | rows | positives | mean_score
+---------------+---------------+------+-----------+------------
+ 2026-09-01    | v1            |  125 |        44 | 0.38077391
+(1 row)
+
+ invalid_scores
+----------------
+              0
+(1 row)
+
+╭─mikomiko@MacBook-Pro-16-2024 ~/repos/HSE_AI26/mlops/mlops-barinov-hw-1-base ‹master●›
+╰─$

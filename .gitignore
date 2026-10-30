@@ -5,3 +5,5 @@ include/artifacts/
 logs/
 .venv/
 .DS_Store
+
+.idea
